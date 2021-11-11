@@ -1,3 +1,27 @@
+<header>
+  <section class="header-container">
+    <nav>
+      <div class="header-menu">
+      <%= if @current_user do %>
+        <div><%= @current_user.email %></div>
+        <div><%= link "Settings", to: Routes.user_settings_path(@socket, :edit) %></div>
+        <div><%= link "Log out", to: Routes.user_session_path(@socket, :delete), method: :delete %></div>
+      <% else %>
+        <div><%= link "Register", to: Routes.user_registration_path(@socket, :new) %></div>
+        <div><%= link "Log in", to: Routes.user_session_path(@socket, :new) %></div>
+      <% end %>
+      </div>
+    </nav>
+    <h2 id="logo">
+      M<span style="font-size: 2rem;">e</span><span style="font-style: italic;">M</span><span style="font-size: 02rem;font-style: italic;">o</span>
+    </h2>
+    <%= if @current_user do %>
+      <form phx-change="search" phx-submit="save" id="header-search">
+        <input type="text" placeholder="Search creator, user, title..." phx-debounce="2000" name="term"/>
+      </form>
+    <% end %>
+  </section>
+</header>
 <main>
   <p class="alert alert-info" role="alert"
     phx-click="lv:clear-flash"

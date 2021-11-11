@@ -7,6 +7,7 @@ defmodule Memo.Accounts.User do
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+    field :username, :string
 
     timestamps()
   end
@@ -33,6 +34,7 @@ defmodule Memo.Accounts.User do
     |> cast(attrs, [:email, :password])
     |> validate_email()
     |> validate_password(opts)
+    |> unique_constraint(:email)
   end
 
   defp validate_email(changeset) do

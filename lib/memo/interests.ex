@@ -29,7 +29,7 @@ defmodule Memo.Interests do
     |> Repo.preload([:creators])
   end
 
-  def near(query, %{latitude: lat, longitude: lng}) do
+  def near(query, %{"latitude" => lat, "longitude" => lng}) do
     point = %Geo.Point{coordinates: {lng, lat}, srid: 4326}
     {lng, lat} = point.coordinates
 
@@ -40,7 +40,7 @@ defmodule Memo.Interests do
 
   def near(query, _), do: query
 
-  def by_term(query, %{term: term}) when not is_nil(term) do
+  def by_term(query, %{"term" => term}) when not is_nil(term) do
     from(ui in query,
       join: user in assoc(ui, :user),
       join: creator in assoc(ui, :creators),
@@ -51,7 +51,7 @@ defmodule Memo.Interests do
 
   def by_term(query, _), do: query
 
-  def by_types(query, %{types: types}) do
+  def by_types(query, %{"types" => types}) do
     from(ui in query,
       where: ui.types in ^types
     )
