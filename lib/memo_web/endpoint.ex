@@ -10,7 +10,10 @@ defmodule MemoWeb.Endpoint do
     signing_salt: "m52InPXC"
   ]
 
-  socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [
+      connect_info: [session: @session_options],
+      timeout: 45_000]
 
   # Serve at "/" the static files from "priv/static" directory.
   #
