@@ -4,7 +4,7 @@
   <div><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></div>
   <div><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></div>
 <% else %>
-  <div><%= link "Register", to: Routes.user_registration_path(@conn, :new) %></div>
+  <div><%= link "Sign up!", to: Routes.user_registration_path(@conn, :new) %></div>
   <div><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></div>
 <% end %>
 </div>
