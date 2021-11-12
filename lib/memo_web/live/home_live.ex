@@ -9,7 +9,7 @@ defmodule MemoWeb.HomeLive do
         user <- Accounts.get_user_by_session_token(user_token) do
           assign(socket, :current_user, user)
     else
-        _ ->   assign(socket, :current_user, nil)
+        _ -> assign(socket, :current_user, nil)
     end
     {:ok, socket}
   end
@@ -17,7 +17,6 @@ defmodule MemoWeb.HomeLive do
   @impl true
   def handle_event("search", params, socket) do
     {socket, params} = merge_socket_and_params(socket, params)
-    IO.inspect(params)
     interests = params
       |> Memo.Interests.search_and_filter()
       |> Enum.map(&interest_to_map/1)
@@ -43,6 +42,11 @@ defmodule MemoWeb.HomeLive do
       title: interest.title,
       type: interest.type,
       thumbnail: interest.thumbnail,
+      creators: Enum.map(interest.creators, fn c -> c.name end) |> Enum.join(","),
+      user: %{
+        id: interest.user.id,
+        username: interest.user.username,
+      },
       location: %{
         latitude: lat,
         longitude: lng

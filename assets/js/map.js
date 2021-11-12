@@ -1,3 +1,5 @@
+import { interestTypeString } from "./util";
+
 mapboxgl.accessToken =
   "pk.eyJ1IjoiYXNoa2FuMTgiLCJhIjoiY2pzdnk5eGRpMGMxcTN5bzRsOHRjdDR2cCJ9.qaLMKiKsDDLnMPLJ-s4rIQ";
 export const map = new mapboxgl.Map({
@@ -95,7 +97,7 @@ map.on("load", () => {
       coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
     //map.easeTo({ center: [coordinates[0] - 0.0001, coordinates[1] - 0.0001] });
-
+    console.log(e.features[0]);
     new mapboxgl.Popup({
       className: "interest-popup",
       closeButton: false,
@@ -118,14 +120,16 @@ map.on("load", () => {
 });
 
 const interestPopup = (interestFeature) => `
-  <section class="item">
+  <section class="item item-${interestFeature.properties.type}">
     <div class="item-thumbnail">
       <img src="${interestFeature.properties.thumbnail}"/>
     </div>
     <div class="item-detail">
-      <div> ${interestFeature.id}</div>
+      <div> ${interestFeature.properties.username} ${interestTypeString(
+  interestFeature.properties.type
+)}</div>
       <div class="item-popup-title">${interestFeature.properties.title}</div>
-      <div class="item-popup-user">Ashkan</div>
+      <div> ${interestFeature.properties.creators} </div>
     </div>
   </section>
 `;

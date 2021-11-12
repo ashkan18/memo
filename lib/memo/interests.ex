@@ -26,7 +26,7 @@ defmodule Memo.Interests do
     |> near(args)
     |> filter_users(args)
     |> Repo.all()
-    |> Repo.preload([:creators])
+    |> Repo.preload([:creators, :user])
   end
 
   def near(query, %{"latitude" => lat, "longitude" => lng}) do

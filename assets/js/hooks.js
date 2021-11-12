@@ -24,6 +24,9 @@ Hooks.MapThingsHandler = {
             description: i.title,
             type: i.type,
             thumbnail: i.thumbnail,
+            creators: i.creators,
+            user_id: i.user.id,
+            username: i.user.username,
           },
         };
       });

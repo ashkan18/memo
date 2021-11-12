@@ -1,6 +1,9 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
 
+a {
+  color: #F8A400
+}
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;
@@ -90,34 +93,40 @@
 
 header {
   padding: 3px;
+  background-color: rgb(83, 81, 81);
 }
 
 .header-container {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: flex-start;
   align-content: stretch;
+  font-weight: 5;
 }
 
 .header-menu {
-  width: 300px;
+  width: 400px;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-around;
   align-items: flex-start;
   align-content: stretch;
+  padding: 5px;
 }
 
 #logo {
   padding: 0;
   margin: 0;
+  color: #F8A400;
+  font-weight: 6;
 }
 
 form {
   margin-bottom: 0px;
+  padding: 3px;
 }
 
 #header-search{
@@ -126,11 +135,6 @@ form {
   margin-left: 5px;
   width: 50%;
   
-}
-
-#header-search input{
-  padding-left: 5px;
-  height: auto;
 }
 
 
@@ -145,9 +149,21 @@ form {
 .item {
   display: flex;
   flex-direction: row;
-  padding: 2px;
+  padding: 5px;
   border: 1px solid gray;
   width: 400px;
+}
+
+.item-watched {
+  border: 1px solid #FF8C00;
+}
+
+.item-read {
+  border: 1px solid #008000;
+}
+
+.item-listened {
+  border: 2px solid #9ACD32;
 }
 
 .item-thumbnail img {
