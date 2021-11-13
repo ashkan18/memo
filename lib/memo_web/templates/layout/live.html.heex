@@ -27,7 +27,7 @@
     <form phx-change="parseInterest" id="parseInterest" phx:page-loading-start>
       <input type="text" placeholder="Link to item, ISBN..." phx-debounce="2000" name="reference"/>
     </form>
-    <%= if @fetched do %>
+    <%= if @fetched and !@submitted do %>
       <div class="item parsed-item">
         <div class="item-thumbnail">
           <img src={@parsed_image} class="parsed-image">
@@ -38,6 +38,12 @@
           <input type="hidden" name="thumbnail" value={@parsed_image}/>
           <input type="hidden" name="ref" value={@reference}/>
         </form>
+      </div>
+    <% end %>
+    <%= if @submitted do %>
+      <div>
+        <span> Added successfully </span>
+        <button x-on:click="open = false"> Close </button>
       </div>
     <% end %>
   </div>
