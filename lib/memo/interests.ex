@@ -7,6 +7,7 @@ defmodule Memo.Interests do
   alias Memo.Repo
 
   alias Memo.Interests.UserInterest
+  alias Memo.Creators
 
 
   def user_feed(user) do
@@ -66,4 +67,29 @@ defmodule Memo.Interests do
   end
 
   def filter_users(query, _), do: query
+
+
+  @doc """
+  Creates a user_interest.
+
+  ## Examples
+
+      iex> add(%{field: value})
+      {:ok, %UserInterest{}}
+
+      iex> add(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def add(attrs \\ %{}) do
+    with {creator_ids, attrs} <- Map.pop(attrs, :creator_ids),
+         changeset <- UserInterest.changeset(%UserInterest{}, attrs),
+         {:ok, user_interest} <- Repo.insert(changeset),
+         Enum.map(creator_ids, fn creator_id -> Creators.create_user_interest_creator(%{user_interest_id: user_interest.id, creator_id: creator_id}) end) do
+      {:ok, user_interest}
+    else
+      {:error, error = %Ecto.Changeset{}} -> {:error, error}
+      error -> error
+    end
+  end
 end

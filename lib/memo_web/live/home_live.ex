@@ -1,7 +1,7 @@
 defmodule MemoWeb.HomeLive do
   use MemoWeb, :live_view
   alias Memo.Interests.UserInterest
-  alias Memo.{Accounts, Things}
+  alias Memo.{Accounts, Things, Interests}
 
   @impl true
   def mount(_params, session, socket) do
@@ -11,7 +11,7 @@ defmodule MemoWeb.HomeLive do
     else
         _ -> assign(socket, :current_user, nil)
     end
-    {:ok, assign(socket, parsed_image: nil, parsed_title: nil)}
+    {:ok, assign(socket, fetched: false, submitted: false)}
   end
 
   @impl true
@@ -35,9 +35,23 @@ defmodule MemoWeb.HomeLive do
     end
     case parse_result do
       {:ok, result} ->
-        {:noreply, assign(socket, parsed_image: result.image, parsed_title: result.title)}
-      _ -> {:noreply, assign(socket, :parsed_image, nil)}
+        {:noreply, assign(socket,
+          fetched: :found,
+          parsed_image: result.image,
+          parsed_title: result.title,
+          parsed_type: result.type,
+          ref: reference)}
+      _ ->
+        {:noreply, assign(socket, :fetched, :not_found)}
     end
+  end
+
+  @impl true
+  def handle_event("submitInterest", params, socket) do
+    params
+      |> Map.merge(%{latitude: socket.assigns.latitude, longitude: socket.assigns.longitude})
+      |> Interests.add()
+    {:noreply, assign(socket, :submitted, true)}
   end
 
   defp merge_socket_and_params(socket, params = %{"latitude" => _lat, "longitude" => _lng}) do

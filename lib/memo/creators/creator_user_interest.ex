@@ -1,9 +1,9 @@
-defmodule Memo.Interests.UserInterestCreator do
+defmodule Memo.Creators.CreatorUserInterest do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "user_interest_creators" do
-    belongs_to(:user_interest, Memo.Accounts.UserInterest)
+  schema "creator_user_interests" do
+    belongs_to(:user_interest, Memo.Interests.UserInterest)
     belongs_to(:creator, Memo.Creators.Creator)
 
     timestamps()
