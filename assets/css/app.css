@@ -4,6 +4,10 @@
 a {
   color: #F8A400
 }
+
+[x-cloak] { display: none !important; }
+
+
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;
@@ -173,3 +177,18 @@ form {
 .item-detail {
   padding-left: 5px;
 }
+
+
+#add-interest-modal {
+  width: 400px;
+  height: 400px;
+  position: relative;
+  top: 0px;
+  margin: auto;
+  z-index: 5;
+  background-color: rgb(13, 13, 13);
+  border: 1px white solid;
+  color: #eee;
+}
+
+

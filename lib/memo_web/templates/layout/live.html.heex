@@ -1,13 +1,11 @@
-<header>
+<header x-data="{open: false}">
   <section class="header-container">
     <nav>
       <div class="header-menu">
       <%= if @current_user do %>
-        <div></div>
         <div><%= link "Settings", to: Routes.user_settings_path(@socket, :edit) %></div>
         <div>
-          <%= link "Log out (#{@current_user.email})", to: Routes.user_session_path(@socket, :delete), method: :delete %>
-          
+        <%= link "Log out (#{@current_user.email})", to: Routes.user_session_path(@socket, :delete), method: :delete %>  
         </div>
       <% else %>
         <div><%= link "Register", to: Routes.user_registration_path(@socket, :new) %></div>
@@ -18,12 +16,30 @@
     <h2 id="logo">
       M<span style="font-size: 2rem;">e</span><span style="font-style: italic;">M</span><span style="font-size: 02rem;font-style: italic;">o</span>
     </h2>
+    <form phx-change="search" phx-submit="save" id="header-search">
+      <input type="text" placeholder="Search creator, user, title..." phx-debounce="2000" name="term"/>
+    </form>
     <%= if @current_user do %>
-      <form phx-change="search" phx-submit="save" id="header-search">
-        <input type="text" placeholder="Search creator, user, title..." phx-debounce="2000" name="term"/>
-      </form>
+     <div>
+        <button x-on:click="open = true">+</button>
+      </div>
     <% end %>
   </section>
+  <div id="add-interest-modal" x-show="open" x-transition x-cloak>
+    <form phx-change="parseInterest" id="parseInterest" phx:page-loading-start>
+      <input type="text" placeholder="Link to item, ISBN..." phx-debounce="2000" name="reference"/>
+    </form>
+    <%= if @parsed_image do %>
+      <div class="item parsed-item">
+        <div class="item-thumbnail">
+          <img src={@parsed_image} class="parsed-image">
+        </div>
+        <div class="item-detail">
+          <%= @parsed_title %>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </header>
 <main>
   <p class="alert alert-info" role="alert"

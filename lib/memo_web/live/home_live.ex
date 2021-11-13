@@ -1,7 +1,7 @@
 defmodule MemoWeb.HomeLive do
   use MemoWeb, :live_view
   alias Memo.Interests.UserInterest
-  alias Memo.Accounts
+  alias Memo.{Accounts, Things}
 
   @impl true
   def mount(_params, session, socket) do
@@ -11,7 +11,7 @@ defmodule MemoWeb.HomeLive do
     else
         _ -> assign(socket, :current_user, nil)
     end
-    {:ok, socket}
+    {:ok, assign(socket, parsed_image: nil, parsed_title: nil)}
   end
 
   @impl true
@@ -21,6 +21,23 @@ defmodule MemoWeb.HomeLive do
       |> Memo.Interests.search_and_filter()
       |> Enum.map(&interest_to_map/1)
     {:noreply, push_event(socket, "search_results", %{interests: interests})}
+  end
+
+  @impl true
+  def handle_event("parseInterest", %{"reference" => reference}, socket) do
+    parse_result = case URI.parse(reference) do
+      %URI{scheme: nil} ->
+        # not a uri, try ISBN
+        Things.find_by_isbn(reference)
+      _ ->
+        # uri try unfurl
+        Things.unfurl_link(reference)
+    end
+    case parse_result do
+      {:ok, result} ->
+        {:noreply, assign(socket, parsed_image: result.image, parsed_title: result.title)}
+      _ -> {:noreply, assign(socket, :parsed_image, nil)}
+    end
   end
 
   defp merge_socket_and_params(socket, params = %{"latitude" => _lat, "longitude" => _lng}) do

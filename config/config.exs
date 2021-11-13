@@ -8,7 +8,11 @@
 import Config
 
 config :memo,
-  ecto_repos: [Memo.Repo]
+  ecto_repos: [Memo.Repo],
+  googlebooks_api: %{
+    url: System.get_env("GOOGLE_BOOKS_API_URL"),
+    key: System.get_env("GOOGLE_BOOKS_API_KEY")
+  }
 
 # Configures the endpoint
 config :memo, MemoWeb.Endpoint,

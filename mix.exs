@@ -39,10 +39,11 @@ defmodule Memo.MixProject do
       {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
       {:geo_postgis, "~> 3.1"},
+      {:furlex, git: "https://github.com/ashkan18/furlex.git", branch: "master"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 0.16.0"},
-      {:floki, ">= 0.30.0", only: :test},
+      {:phoenix_live_view, "~> 0.17.5"},
+      # {:floki, ">= 0.30.0"},
       {:phoenix_live_dashboard, "~> 0.5"},
       {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.3"},
@@ -50,6 +51,7 @@ defmodule Memo.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
+      {:tesla, "~> 1.4.3"},
       {:plug_cowboy, "~> 2.5"}
     ]
   end

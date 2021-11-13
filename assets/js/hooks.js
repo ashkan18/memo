@@ -2,6 +2,22 @@ import { map } from "./map";
 
 export const Hooks = {};
 
+Hooks.BeforeUnload = {
+  mounted() {
+    var el = this.el;
+    this.beforeUnload = function (e) {
+      if (el.dataset.changesMade === "true") {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", this.beforeUnload, true);
+  },
+  destroyed() {
+    window.removeEventListener("beforeunload", this.beforeUnload, true);
+  },
+};
+
 Hooks.MapThingsHandler = {
   mounted() {
     navigator.geolocation.getCurrentPosition((position) => {
