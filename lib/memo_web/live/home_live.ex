@@ -72,7 +72,7 @@ defmodule MemoWeb.HomeLive do
 
   @impl true
   def handle_event("submitInterest", params, socket) do
-    %{"latitude" => lat, "longitude" => lng} = socket.assigns
+    %{latitude: lat, longitude: lng} = socket.assigns
 
 
     creator_ids = params
