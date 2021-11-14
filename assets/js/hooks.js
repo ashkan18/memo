@@ -22,8 +22,8 @@ Hooks.MapThingsHandler = {
   mounted() {
     navigator.geolocation.getCurrentPosition((position) => {
       const { latitude, longitude } = position.coords;
+      this.pushEvent("setLocation", { longitude, latitude });
       map.setCenter([longitude, latitude]);
-      this.pushEvent("search", { longitude, latitude });
     });
 
     const handleSearchResults = ({ interests }) => {

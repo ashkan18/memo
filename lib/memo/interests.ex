@@ -82,7 +82,8 @@ defmodule Memo.Interests do
 
   """
   def add(attrs \\ %{}) do
-    with {creator_ids, attrs} <- Map.pop(attrs, :creator_ids),
+    IO.inspect(label: attrs)
+    with {creator_ids, attrs} <- Map.pop(attrs, "creator_ids"),
          changeset <- UserInterest.changeset(%UserInterest{}, attrs),
          {:ok, user_interest} <- Repo.insert(changeset),
          Enum.map(creator_ids, fn creator_id -> Creators.create_user_interest_creator(%{user_interest_id: user_interest.id, creator_id: creator_id}) end) do

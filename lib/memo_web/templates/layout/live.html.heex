@@ -3,10 +3,26 @@
     <nav>
       <div class="header-menu">
       <%= if @current_user do %>
-        <div>
-          <%= link "Log out (#{@current_user.email})", to: Routes.user_session_path(@socket, :delete), method: :delete %>  
+        <div class="relative"
+          x-data="{userMenuOpen: false}"
+          x-on:click="userMenuOpen = true"
+          x-on:click.away="userMenuOpen = false">
+          <div class="flex items-center">
+            <div class="ml-3">
+              <p class="text-sm leading-5 font-medium group-hover:text-gray-900">
+                <%= @current_user.email %>
+              </p>
+            </div>
+          </div>
+          <div class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg"
+               x-show.transition="userMenuOpen"
+               x-cloak>
+            <div class="">
+              <%= link "Settings", to: Routes.user_settings_path(@socket, :edit) %>
+              <%= link "Log out (#{@current_user.email})", to: Routes.user_session_path(@socket, :delete), method: :delete, class: "block px-4 py-2 text-sm leading-5 hover:bg-gray-100"%>  
+            </div>
+          </div>
         </div>
-        <div><%= link "Settings", to: Routes.user_settings_path(@socket, :edit) %></div>
       <% else %>
         <div><%= link "Register", to: Routes.user_registration_path(@socket, :new) %></div>
         <div><%= link "Log in", to: Routes.user_session_path(@socket, :new) %></div>
@@ -28,16 +44,18 @@
       <input type="text" placeholder="Link to item, ISBN..." phx-debounce="2000" name="reference"/>
     </form>
     <%= if @fetched and !@submitted do %>
-      <div class="item parsed-item">
-        <div class="item-thumbnail">
-          <img src={@parsed_image} class="parsed-image">
+      <div class="parsed-item">
+        <div class="parsed-item-thumbnail">
+          <img src={@parsed_results.image} class="parsed-image">
         </div>
-        <form phx-submit="submitInterest">
-          <input type="text" name="title" value={@parsed_title} placeholder="Title of work"/>
-          <input type="text" name="type" value={@parsed_type} placeholder="Title of work"/>
-          <input type="hidden" name="thumbnail" value={@parsed_image}/>
+        <form phx-submit="submitInterest" id="submitform">
+          <input type="text" name="title" value={Map.get(@parsed_results, :title)} placeholder="Title of the work"/>
+          <input type="text" name="type" value={Map.get(@parsed_results, :type)} placeholder="Title of the work"/>
+          <input type="text" name="creator_names" value={Map.get(@parsed_results, :creator)} placeholder="Comma separated list of creators of the work"/>
+          <input type="hidden" name="thumbnail" value={Map.get(@parsed_results, :image)}/>
           <input type="hidden" name="ref" value={@reference}/>
         </form>
+        <button type="submit" form="submitform" value="Submit">Submit</button>
       </div>
     <% end %>
     <%= if @submitted do %>

@@ -1,7 +1,7 @@
 defmodule MemoWeb.HomeLive do
   use MemoWeb, :live_view
   alias Memo.Interests.UserInterest
-  alias Memo.{Accounts, Things, Interests}
+  alias Memo.{Accounts, Things, Interests, Creators}
 
   @impl true
   def mount(_params, session, socket) do
@@ -11,16 +11,42 @@ defmodule MemoWeb.HomeLive do
     else
         _ -> assign(socket, :current_user, nil)
     end
-    {:ok, assign(socket, fetched: false, submitted: false)}
+    {:ok, assign(socket, has_location: false, latitude: nil, longitude: nil, fetched: false, submitted: false)}
+  end
+
+  @impl true
+  def handle_info({"search", params}, socket) do
+    IO.inspect(params, label: "doing search info ===>")
+    if socket.assigns.has_location do
+      interests = params
+        |> Map.merge(%{"latitude" => socket.assigns.latitude, "longitude" => socket.assigns.longitude })
+        |> Memo.Interests.search_and_filter()
+        |> Enum.map(&interest_to_map/1)
+      {:noreply, push_event(socket, "search_results", %{interests: interests})}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  @impl true
+  def handle_event("setLocation", params = %{"latitude" => latitude, "longitude" => longitude}, socket) do
+    socket = assign(socket, has_location: true, latitude: latitude, longitude: longitude)
+    send(self(), {"search", params})
+    :timer.send_after(1000, self(), {"search", %{}})
+    {:noreply, socket}
   end
 
   @impl true
   def handle_event("search", params, socket) do
-    {socket, params} = merge_socket_and_params(socket, params)
-    interests = params
-      |> Memo.Interests.search_and_filter()
-      |> Enum.map(&interest_to_map/1)
-    {:noreply, push_event(socket, "search_results", %{interests: interests})}
+    if socket.assigns.has_location do
+      interests = params
+        |> Map.merge(%{"latitude" => socket.assigns.latitude, "longitude" => socket.assigns.longitude })
+        |> Memo.Interests.search_and_filter()
+        |> Enum.map(&interest_to_map/1)
+      {:noreply, push_event(socket, "search_results", %{interests: interests})}
+    else
+      {:noreply, socket}
+    end
   end
 
   @impl true
@@ -36,35 +62,37 @@ defmodule MemoWeb.HomeLive do
     case parse_result do
       {:ok, result} ->
         {:noreply, assign(socket,
-          fetched: :found,
-          parsed_image: result.image,
-          parsed_title: result.title,
-          parsed_type: result.type,
-          ref: reference)}
+          fetched: true,
+          parsed_results: result,
+          reference: reference)}
       _ ->
-        {:noreply, assign(socket, :fetched, :not_found)}
+        {:noreply, assign(socket, :fetched, false)}
     end
   end
 
   @impl true
   def handle_event("submitInterest", params, socket) do
+    %{"latitude" => lat, "longitude" => lng} = socket.assigns
+
+
+    creator_ids = params
+      |> Map.get("creator_names")
+      |> String.split(",")
+      |> Enum.map(&Creators.add_by_name/1)
+      |> Enum.reject(&is_nil/1)
+      |> Enum.map(fn c -> c.id end)
+
     params
-      |> Map.merge(%{latitude: socket.assigns.latitude, longitude: socket.assigns.longitude})
+      |> Map.merge(
+        %{"latitude" => lat,
+        "longitude" => lng,
+        "user_id" => socket.assigns.current_user.id,
+        "craetor_ids" => creator_ids})
+      |> IO.inspect(label: :submit_params)
       |> Interests.add()
+      |> IO.inspect()
     {:noreply, assign(socket, :submitted, true)}
   end
-
-  defp merge_socket_and_params(socket, params = %{"latitude" => _lat, "longitude" => _lng}) do
-    # we had lat/lng in params, update socket
-    { assign(socket, Map.take(params, ["latitude", "longitude"])), params}
-  end
-
-  defp merge_socket_and_params(socket = %{assigns: %{"latitude" => _lat, "longitude" => _lng}}, params) do
-    # we had lat/lng in socket, update params
-    { socket , Map.merge(params, Map.take(socket.assigns, ["latitude", "longitude"]))}
-  end
-
-  defp merge_socket_and_params(socket, params), do: {socket, params}
 
   defp interest_to_map(interest = %UserInterest{}) do
     {lat, lng} = interest.location.coordinates

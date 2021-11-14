@@ -2,19 +2,15 @@ defmodule Memo.Things do
   def unfurl_link(url) do
     case Furlex.unfurl(url) do
       {:ok, %Furlex{oembed: data}} when not is_nil(data) ->
-        IO.inspect(data, label: :omebed)
         unfurl_oembed(data)
 
       {:ok, %Furlex{json_ld: data}} when data !== [] ->
-        IO.inspect(data, label: :json_ld)
         unfurl_json_ld(data)
 
-      {:ok, a = %Furlex{twitter: data}} when not is_nil(data) ->
-        IO.inspect(a, label: :twitter)
+      {:ok, %Furlex{twitter: data}} when not is_nil(data) ->
         unfurl_twitter(data)
 
-      error ->
-        IO.inspect(error)
+      _error ->
         {:error, "Could not unfurl"}
     end
   end

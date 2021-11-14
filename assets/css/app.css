@@ -199,6 +199,9 @@ form {
   border: 1px solid gray;
   width: 400px;
 }
+.parsed-item input {
+  color: #eee;
+}
 
 .parsed-item-watched {
   border: 1px solid #FF8C00;
