@@ -81,11 +81,18 @@ defmodule Memo.Interests do
       {:error, %Ecto.Changeset{}}
 
   """
-  def add(attrs \\ %{}) do
-    IO.inspect(label: attrs)
+  def add(args = %{"latitude" => lat, "longitude" => lng}) do
+    args
+    |> Map.drop(["latitude", "longitude"])
+    |> Map.put("location", %Geo.Point{coordinates: {lng, lat}, srid: 4326})
+    |> add()
+  end
+
+  def add(attrs) do
     with {creator_ids, attrs} <- Map.pop(attrs, "creator_ids"),
          changeset <- UserInterest.changeset(%UserInterest{}, attrs),
          {:ok, user_interest} <- Repo.insert(changeset),
+         IO.inspect(creator_ids, label: :creator_ids),
          Enum.map(creator_ids, fn creator_id -> Creators.create_user_interest_creator(%{user_interest_id: user_interest.id, creator_id: creator_id}) end) do
       {:ok, user_interest}
     else

@@ -87,10 +87,9 @@ defmodule MemoWeb.HomeLive do
         %{"latitude" => lat,
         "longitude" => lng,
         "user_id" => socket.assigns.current_user.id,
-        "craetor_ids" => creator_ids})
-      |> IO.inspect(label: :submit_params)
+        "creator_ids" => creator_ids})
       |> Interests.add()
-      |> IO.inspect()
+    :timer.send_after(1000, self(), {"search", %{}})
     {:noreply, assign(socket, :submitted, true)}
   end
 
