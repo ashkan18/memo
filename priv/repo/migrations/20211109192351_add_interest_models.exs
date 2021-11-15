@@ -28,7 +28,6 @@ defmodule Memo.Repo.Migrations.AddInterestModels do
       add :user_interest_id, references(:user_interests, on_delete: :nothing)
       add :creator_id, references(:creators, on_delete: :nothing)
 
-
       timestamps()
     end
 

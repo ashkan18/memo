@@ -5,7 +5,8 @@ defmodule Memo.GoogleBook do
   plug(Tesla.Middleware.JSON)
 
   def get_book(isbn) do
-    with {:ok, response} <- get("/v1/volumes", query: [q: "#{isbn}+isbn", key: Application.fetch_env!(:memo, :googlebooks_api).key]),
+    with {:ok, response} <-
+           get("/v1/volumes", query: [q: "#{isbn}+isbn", key: Application.fetch_env!(:memo, :googlebooks_api).key]),
          200 <- response.status do
       {:ok, List.first(response.body["items"])}
     else

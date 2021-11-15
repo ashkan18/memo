@@ -12,6 +12,7 @@ defmodule Memo.Interests.UserInterest do
     field(:metadata, {:array, :map})
 
     belongs_to(:user, Memo.Accounts.User)
+
     many_to_many(:creators, Memo.Creators.Creator, join_through: Memo.Creators.CreatorUserInterest)
 
     timestamps()

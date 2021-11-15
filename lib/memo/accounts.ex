@@ -348,7 +348,6 @@ defmodule Memo.Accounts do
     end
   end
 
-
   # def follow(attrs \\ %{}) do
   #   %Follow{}
   #   |> Follow.changeset(attrs)
@@ -361,6 +360,4 @@ defmodule Memo.Accounts do
   #   )
   #   |> Repo.exists?()
   # end
-
-
 end

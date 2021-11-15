@@ -16,11 +16,22 @@ defmodule Memo.Things do
   end
 
   defp unfurl_oembed(data) do
-    {:ok, %{creator_names: [cleanup_author_name(data["author_name"])], image: data["thumbnail_url"], type: map_types(data["type"]), title: data["title"]}}
+    {:ok,
+     %{
+       creator_names: [cleanup_author_name(data["author_name"])],
+       image: data["thumbnail_url"],
+       type: map_types(data["type"]),
+       title: data["title"]
+     }}
   end
 
   defp unfurl_twitter(data) do
-    {:ok, %{image: data["twitter:image"], type: map_types(data["twitter:creator"] || data["twitter:site"]), title: data["twitter:title"]}}
+    {:ok,
+     %{
+       image: data["twitter:image"],
+       type: map_types(data["twitter:creator"] || data["twitter:site"]),
+       title: data["twitter:title"]
+     }}
   end
 
   defp map_types("MusicRecording"), do: :listened
@@ -34,11 +45,23 @@ defmodule Memo.Things do
   defp map_types(something), do: something
 
   defp unfurl_json_ld([data = %{"@type" => "Movie"} | _]) do
-    {:ok, %{type: :watched, title: data["name"], image: data["image"], creator_names: [fetch_json_ld_person(data["director"])]}}
+    {:ok,
+     %{
+       type: :watched,
+       title: data["name"],
+       image: data["image"],
+       creator_names: [fetch_json_ld_person(data["director"])]
+     }}
   end
 
   defp unfurl_json_ld([data | _]) do
-    {:ok, %{type: map_types(data["@type"]), title: data["name"], image: data["image"], creator_names: [fetch_json_ld_person(data["author"])]}}
+    {:ok,
+     %{
+       type: map_types(data["@type"]),
+       title: data["name"],
+       image: data["image"],
+       creator_names: [fetch_json_ld_person(data["author"])]
+     }}
   end
 
   defp fetch_json_ld_person(authors) when is_list(authors) do
@@ -77,7 +100,9 @@ defmodule Memo.Things do
            title: book["volumeInfo"]["title"],
            creator_names: book["volumeInfo"]["authors"],
            tags: book["volumeInfo"]["categories"],
-           image: book["volumeInfo"]["imageLinks"]["large"] || book["volumeInfo"]["imageLinks"]["thumbnail"],
+           image:
+             book["volumeInfo"]["imageLinks"]["large"] ||
+               book["volumeInfo"]["imageLinks"]["thumbnail"],
            description: book["volumeInfo"]["description"]
          }}
 

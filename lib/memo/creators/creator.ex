@@ -7,6 +7,7 @@ defmodule Memo.Creators.Creator do
     field(:bio, :string)
 
     many_to_many(:user_interests, Memo.Interests.UserInterest, join_through: Memo.Creators.CreatorUserInterest)
+
     timestamps()
   end
 

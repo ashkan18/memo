@@ -9,7 +9,6 @@ defmodule Memo.Interests do
   alias Memo.Interests.UserInterest
   alias Memo.Creators
 
-
   def user_feed(user) do
     from(ui in UserInterest,
       join: f in Follow,
@@ -18,7 +17,6 @@ defmodule Memo.Interests do
     )
     |> Repo.all()
   end
-
 
   def search_and_filter(args) do
     UserInterest
@@ -35,7 +33,14 @@ defmodule Memo.Interests do
     {lng, lat} = point.coordinates
 
     from(book_instance in query,
-      order_by: fragment("? <-> ST_SetSRID(ST_MakePoint(?,?), ?)", book_instance.location, ^lng, ^lat, ^point.srid)
+      order_by:
+        fragment(
+          "? <-> ST_SetSRID(ST_MakePoint(?,?), ?)",
+          book_instance.location,
+          ^lng,
+          ^lat,
+          ^point.srid
+        )
     )
   end
 
@@ -45,7 +50,16 @@ defmodule Memo.Interests do
     from(ui in query,
       join: user in assoc(ui, :user),
       join: creator in assoc(ui, :creators),
-      where: fragment("LOWER(?) % LOWER(?) OR LOWER(?) % LOWER(?) OR LOWER(?) % LOWER(?)", ui.title, ^term, user.username, ^term, creator.name, ^term),
+      where:
+        fragment(
+          "LOWER(?) % LOWER(?) OR LOWER(?) % LOWER(?) OR LOWER(?) % LOWER(?)",
+          ui.title,
+          ^term,
+          user.username,
+          ^term,
+          creator.name,
+          ^term
+        ),
       order_by: fragment("similarity(LOWER(?), LOWER(?)) DESC", ui.title, ^term)
     )
   end
@@ -67,7 +81,6 @@ defmodule Memo.Interests do
   end
 
   def filter_users(query, _), do: query
-
 
   @doc """
   Creates a user_interest.
@@ -93,7 +106,12 @@ defmodule Memo.Interests do
          changeset <- UserInterest.changeset(%UserInterest{}, attrs),
          {:ok, user_interest} <- Repo.insert(changeset),
          IO.inspect(creator_ids, label: :creator_ids),
-         Enum.map(creator_ids, fn creator_id -> Creators.create_user_interest_creator(%{user_interest_id: user_interest.id, creator_id: creator_id}) end) do
+         Enum.map(creator_ids, fn creator_id ->
+           Creators.create_user_interest_creator(%{
+             user_interest_id: user_interest.id,
+             creator_id: creator_id
+           })
+         end) do
       {:ok, user_interest}
     else
       {:error, error = %Ecto.Changeset{}} -> {:error, error}
