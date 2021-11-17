@@ -34,3 +34,5 @@ npm-debug.log
 
 .env
 logfile
+
+/node_modules

@@ -139,14 +139,6 @@ form {
   padding: 3px;
 }
 
-#header-search{
-  padding: 0;
-  margin: 0;
-  margin-left: 5px;
-  width: 50%;
-  
-}
-
 
 #map {
   position: absolute;
@@ -187,25 +179,20 @@ form {
 
 #add-interest-modal {
   width: 400px;
-  height: 400px;
   position: relative;
   top: 0px;
   margin: auto;
   z-index: 5;
   background-color: rgb(13, 13, 13);
   border: 1px white solid;
-  color: #eee;
 }
 
 .parsed-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 5px;
   border: 1px solid gray;
   width: 400px;
 }
-.parsed-item input {
+
+.parsed-item button{
   color: #eee;
 }
 

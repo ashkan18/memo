@@ -1,14 +1,14 @@
-<header x-data="{open: false, userMenuOpen: false}">
-  <section class="flex flex-row md:flex-row items-center m-0 p-1">
-    <h2 id="logo" class="flex-auto text-2xl">
+<header x-data="{open: false, userMenuOpen: false}" class="max-h-12 m-0">
+  <section class="flex flex-row md:flex-row items-center m-0 p-0 items-start">
+    <h2 id="logo" class="flex-initial text-2xl w-20">
       M<span class="text-base">e</span><span class="italic">M</span><span class="text-base italic">o</span>
     </h2>
     
-    <form phx-change="search" phx-submit="save" id="header-search" class="flex-grow">
-      <input type="text" placeholder="Search creator, user, title..." phx-debounce="2000" name="term"/>
+    <form phx-change="search" phx-submit="save" id="header-search" class="flex-grow text-xs w-3/6">
+      <input type="text" placeholder="Search creator, user, title..." phx-debounce="2000" name="term" class="text-xs w-full"/>
     </form>
     <%= if @current_user do %>
-      <button x-on:click="open = true" class="flex-auto">+</button>
+      <button x-on:click="open = true" class="w-10 ring-4">+</button>
     <% end %>
     
     <div class="ml-3 relative">
@@ -42,24 +42,20 @@
       <% end %>
     </div>
   </section>
-  <div id="add-interest-modal" x-show="open" x-transition x-cloak>
-    <form phx-change="parseInterest" id="parseInterest" phx:page-loading-start>
-      <input type="text" placeholder="Link to item, ISBN..." phx-debounce="2000" name="reference"/>
+  <div id="add-interest-modal" x-show="open" x-transition x-cloak class="max-w-sm rounded overflow-hidden shadow-lg flex flex-col items-center h-2/5 px-auto">
+    <form phx-change="parseInterest" id="parseInterest" phx:page-loading-start class="w-full">
+      <input type="text" placeholder="Link to item, ISBN..." phx-debounce="2000" name="reference" class="text-xs w-full"/>
     </form>
     <%= if @fetched and !@submitted do %>
-      <div class="parsed-item">
-        <div class="parsed-item-thumbnail">
-          <img src={@parsed_results.image} class="parsed-image">
-        </div>
-        <form phx-submit="submitInterest" id="submitform">
-          <input type="text" name="title" value={Map.get(@parsed_results, :title)} placeholder="Title of the work"/>
-          <input type="text" name="type" value={Map.get(@parsed_results, :type)} placeholder="Title of the work"/>
-          <input type="text" name="creator_names" value={Map.get(@parsed_results, :creator)} placeholder="Comma separated list of creators of the work"/>
+        <img src={@parsed_results.image} class="w-2/4">
+        <form phx-submit="submitInterest" id="submitform" class="w-full p-5">
+          <input type="text" name="title" value={Map.get(@parsed_results, :title)} placeholder="Title of the work" class="w-full"/>
+          <input type="text" name="type" value={Map.get(@parsed_results, :type)} placeholder="Title of the work" class="w-full"/>
+          <input type="text" name="creator_names" value={Map.get(@parsed_results, :creator)} placeholder="Comma separated list of creators of the work" class="w-full"/>
           <input type="hidden" name="thumbnail" value={Map.get(@parsed_results, :image)}/>
           <input type="hidden" name="ref" value={@reference}/>
         </form>
-        <button type="submit" form="submitform" value="Submit">Submit</button>
-      </div>
+        <input type="submit" form="submitform" value="Submit" class="text-lg ring-4 m-2 p-2" value="submit"/>
     <% end %>
     <%= if @submitted do %>
       <div>
