@@ -23,24 +23,10 @@ defmodule MemoWeb.HomeLive do
   end
 
   @impl true
-  def handle_info({"search", params}, socket) do
-    IO.inspect(params, label: "doing search info ===>")
+  def handle_info({"search", params}, socket), do: search(socket, params)
 
-    if socket.assigns.has_location do
-      interests =
-        params
-        |> Map.merge(%{
-          "latitude" => socket.assigns.latitude,
-          "longitude" => socket.assigns.longitude
-        })
-        |> Memo.Interests.search_and_filter()
-        |> Enum.map(&Util.interest_to_map/1)
-
-      {:noreply, push_event(socket, "search_results", %{interests: interests})}
-    else
-      {:noreply, socket}
-    end
-  end
+  @impl true
+  def handle_event("search", params, socket), do: search(socket, params)
 
   @impl true
   def handle_event(
@@ -55,24 +41,6 @@ defmodule MemoWeb.HomeLive do
   end
 
   @impl true
-  def handle_event("search", params, socket) do
-    if socket.assigns.has_location do
-      interests =
-        params
-        |> Map.merge(%{
-          "latitude" => socket.assigns.latitude,
-          "longitude" => socket.assigns.longitude
-        })
-        |> Memo.Interests.search_and_filter()
-        |> Enum.map(&Util.interest_to_map/1)
-
-      {:noreply, push_event(socket, "search_results", %{interests: interests})}
-    else
-      {:noreply, socket}
-    end
-  end
-
-  @impl true
   def handle_event("parseInterest", %{"reference" => reference}, socket) do
     parse_result =
       case URI.parse(reference) do
@@ -84,6 +52,7 @@ defmodule MemoWeb.HomeLive do
           # uri try unfurl
           Things.unfurl_link(reference)
       end
+      |> IO.inspect()
 
     case parse_result do
       {:ok, result} ->
@@ -122,5 +91,22 @@ defmodule MemoWeb.HomeLive do
 
     :timer.send_after(1000, self(), {"search", %{}})
     {:noreply, assign(socket, :submitted, true)}
+  end
+
+  defp search(socket, params) do
+    if socket.assigns.has_location do
+      interests =
+        params
+        |> Map.merge(%{
+          "latitude" => socket.assigns.latitude,
+          "longitude" => socket.assigns.longitude
+        })
+        |> Memo.Interests.search_and_filter()
+        |> Enum.map(&Util.interest_to_map/1)
+
+      {:noreply, push_event(socket, "search_results", %{interests: interests})}
+    else
+      {:noreply, socket}
+    end
   end
 end
