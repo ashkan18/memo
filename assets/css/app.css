@@ -183,37 +183,18 @@ form {
   top: 0px;
   margin: auto;
   z-index: 5;
-  background-color: rgb(13, 13, 13);
+  background-color: #8a6d3b;
   border: 1px white solid;
 }
 
-.parsed-item {
-  border: 1px solid gray;
-  width: 400px;
-}
-
-.parsed-item button{
-  color: #eee;
-}
-
 .parsed-item-watched {
-  border: 1px solid #FF8C00;
+  background-color:  #FF8C00;
 }
 
 .parsed-item-read {
-  border: 1px solid #008000;
+  background-color:  #008000;
 }
 
 .parsed-item-listened {
-  border: 2px solid #9ACD32;
+  background-color: #9ACD32;
 }
-
-.parsed-item-thumbnail img {
-  max-width: 100px;
-}
-
-.parsed-item-detail {
-  padding-left: 5px;
-}
-
-
