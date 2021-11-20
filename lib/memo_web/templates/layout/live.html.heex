@@ -4,15 +4,15 @@
       M<span class="text-base">e</span><span class="italic">M</span><span class="text-base italic">o</span>
     </h2>
     
-    <form phx-change="search" phx-submit="save" id="header-search" class="flex-grow text-xs w-3/6">
+    <form phx-change="search" phx-submit="save" id="header-search" class="flex-grow text-xs ml-10">
       <input type="text" placeholder="Search creator, user, title..." phx-debounce="2000" name="term" class="text-xs w-full"/>
     </form>
     <%= if @current_user do %>
-      <button x-on:click="open = true" class="w-10 ring-4">+</button>
+      <button x-on:click="open = true" class="w-12 ring-4 ring-yellow-500 text-white h-6">+</button>
     <% end %>
     
     <%= if @current_user do %>
-     <div class="ml-3">
+     <div class="ml-10 mr-5">
         <div class="max-w-xs flex text-sm rounded-full 
                       text-white focus:outline-none focus:shadow-solid"
           x-on:click="userMenuOpen = true"
