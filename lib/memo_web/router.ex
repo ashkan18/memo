@@ -20,8 +20,7 @@ defmodule MemoWeb.Router do
   scope "/", MemoWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    live "/home", HomeLive
+    live "/", HomeLive
   end
 
   # Other scopes may use custom stacks.

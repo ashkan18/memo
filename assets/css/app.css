@@ -116,17 +116,6 @@ header {
   font-weight: 5;
 }
 
-.header-menu {
-  width: 400px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-around;
-  align-items: flex-start;
-  align-content: stretch;
-  padding: 5px;
-}
-
 #logo {
   padding: 0;
   margin: 0;

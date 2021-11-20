@@ -12,7 +12,7 @@
     <% end %>
     
     <%= if @current_user do %>
-     <div class="ml-3 relative">
+     <div class="ml-3">
         <div class="max-w-xs flex text-sm rounded-full 
                       text-white focus:outline-none focus:shadow-solid"
           x-on:click="userMenuOpen = true"
@@ -38,8 +38,8 @@
         </div>
     </div>
     <% else %>
-      <div><%= link "Register", to: Routes.user_registration_path(@socket, :new) %></div>
-      <div><%= link "Log in", to: Routes.user_session_path(@socket, :new) %></div>
+      <div class="ml-5"><%= link "Sign up", to: Routes.user_registration_path(@socket, :new) %></div>
+      <div class="ml-5"><%= link "Log in", to: Routes.user_session_path(@socket, :new) %></div>
     <% end %>
   </section>
   <div id="add-interest-modal" x-show="open" x-transition x-cloak class="max-w-sm rounded overflow-hidden shadow-lg flex flex-col items-center h-2/5 px-auto">
