@@ -50,7 +50,7 @@ defmodule Memo.Things do
        type: :watched,
        title: data["name"],
        image: data["image"],
-       creator_names: [fetch_json_ld_person(data["director"])]
+       creator_names: [fetch_creators_json_ld(data)]
      }}
   end
 
@@ -60,12 +60,35 @@ defmodule Memo.Things do
        type: map_types(data["@type"]),
        title: data["name"],
        image: data["image"],
-       creator_names: [fetch_json_ld_person(data["author"])]
+       creator_names: [fetch_creators_json_ld(data)]
      }}
   end
 
-  defp fetch_json_ld_person(authors) when is_list(authors) do
-    authors
+  defp fetch_creators_json_ld(data) do
+    cond do
+      not is_nil(data["author"]) ->
+        fetch_person(data["author"])
+
+      not is_nil(data["director"]) ->
+        fetch_person(data["director"])
+
+      data["description"] =~ "on Spotify" ->
+        # Spotify link description includes artist name in
+        # "listen to <something> on Spotify . <creator name> . <type> . <year>."
+        # so get creator name from second .
+        data["description"]
+        |> String.split("·")
+        |> Enum.at(0)
+        |> String.split(".")
+        |> Enum.at(1)
+        |> cleanup_author_name()
+
+      true -> ""
+    end
+  end
+
+  defp fetch_person(person_data) do
+    person_data
     |> Enum.map(fn data ->
       case data do
         %{"@type" => "Person", "name" => name} -> name
@@ -75,8 +98,6 @@ defmodule Memo.Things do
     |> Enum.reject(&is_nil/1)
     |> Enum.join(",")
   end
-
-  defp fetch_json_ld_person(_), do: ""
 
   defp cleanup_author_name(name) do
     name
