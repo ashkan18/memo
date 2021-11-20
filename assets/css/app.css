@@ -176,6 +176,10 @@ form {
   border: 1px white solid;
 }
 
+.reference-input {
+  background-color: #aaa;
+}
+
 .parsed-item-watched {
   background-color:  #FF8C00;
 }

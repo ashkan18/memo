@@ -42,8 +42,8 @@
       <div class="ml-5"><%= link "Log in", to: Routes.user_session_path(@socket, :new) %></div>
     <% end %>
   </section>
-  <div id="add-interest-modal" x-show="open" x-transition x-cloak class="max-w-sm rounded overflow-hidden shadow-lg flex flex-col items-center h-2/5 px-auto">
-    <form phx-change="parseInterest" id="parseInterest" phx:page-loading-start class="w-full">
+  <div id="add-interest-modal" x-show="open" x-transition x-cloak class="reference-input max-w-sm rounded overflow-hidden shadow-lg flex flex-col items-center h-2/5 px-auto">
+    <form phx-change="parseInterest" id="parseInterest" phx:page-loading-start class="w-full reference-input">
       <input type="text" placeholder="Link to item, ISBN..." phx-debounce="2000" name="reference" class="text-xs w-full"/>
     </form>
     <%= if @fetched and !@submitted do %>
