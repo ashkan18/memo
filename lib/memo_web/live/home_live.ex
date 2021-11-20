@@ -52,7 +52,6 @@ defmodule MemoWeb.HomeLive do
           # uri try unfurl
           Things.unfurl_link(reference)
       end
-      |> IO.inspect()
 
     case parse_result do
       {:ok, result} ->
@@ -91,6 +90,10 @@ defmodule MemoWeb.HomeLive do
 
     :timer.send_after(1000, self(), {"search", %{}})
     {:noreply, assign(socket, :submitted, true)}
+  end
+
+  def handle_event("closeSubmit", _params, socket) do
+    {:noreply, assign(socket, submitted: false, fetched: false, parsed_results: nil, reference: nil)}
   end
 
   defp search(socket, params) do

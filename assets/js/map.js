@@ -98,7 +98,6 @@ map.on("load", () => {
       coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
     //map.easeTo({ center: [coordinates[0] - 0.0001, coordinates[1] - 0.0001] });
-    console.log(e.features[0]);
     new mapboxgl.Popup({
       className: "interest-popup",
       closeButton: false,

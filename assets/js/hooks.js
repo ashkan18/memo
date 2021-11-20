@@ -24,6 +24,9 @@ Hooks.MapThingsHandler = {
       const { latitude, longitude } = position.coords;
       this.pushEvent("setLocation", { longitude, latitude });
       map.setCenter([longitude, latitude]);
+      new mapboxgl.Marker({ color: "orange", rotation: 15 })
+        .setLngLat([longitude, latitude])
+        .addTo(map);
     });
 
     const handleSearchResults = ({ interests }) => {

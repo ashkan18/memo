@@ -57,15 +57,15 @@
           <input type="hidden" name="ref" value={@reference}/>
         </form>
         <div class="flex flex-row">
-          <input type="submit" form="submitform" value="Submit" class="text-lg ring-4 m-2 p-2" value="submit"/>
-          <button x-on:click="open = false" class="text-lg ring-4 m-2 p-2"> Close </button>
+          <input type="submit" form="submitform" value="Submit" class="text-lg ring-4 m-2 p-2 cursor-pointer" value="submit"/>
+          <button x-on:click="open = false" phx-click="closeSubmit" class="text-lg ring-4 m-2 p-2 cursor-pointer"> Close </button>
         </div>
       </div>
     <% end %>
     <%= if @submitted do %>
       <div class={"parsed-item-#{Map.get(@parsed_results, :type)}"}>
         <span> Added successfully </span>
-        <button x-on:click="open = false"> Close </button>
+        <button x-on:click="open = false" phx-click="closeSubmit"> Close </button>
       </div>
     <% end %>
   </div>
