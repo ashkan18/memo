@@ -19,9 +19,17 @@ defmodule MemoWeb.HomeLive do
        longitude: nil,
        fetching: false,
        fetched: false,
-       submitted: false
+       submitted: false,
+       term: nil
      )}
   end
+
+  @impl true
+  def handle_params(%{"username" => username}, _url, socket) do
+    send(self(), {"search", %{"term" => username}})
+    {:noreply, assign(socket, term: username)}
+  end
+  def handle_params(_params, _url, socket), do: {:noreply, socket}
 
   @impl true
   def handle_info({"search", params}, socket), do: search(socket, params)
@@ -65,7 +73,6 @@ defmodule MemoWeb.HomeLive do
       ) do
     socket = assign(socket, has_location: true, latitude: latitude, longitude: longitude)
     send(self(), {"search", params})
-    :timer.send_after(1000, self(), {"search", %{}})
     {:noreply, socket}
   end
 

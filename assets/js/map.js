@@ -125,7 +125,10 @@ const interestPopup = (interestFeature) => `
       <img src="${interestFeature.properties.thumbnail}"/>
     </div>
     <div class="item-detail">
-      <div> ${interestFeature.properties.username} ${interestTypeString(
+      <div> 
+      <a data-phx-link="patch" data-phx-link-state="push" href="?username=${
+        interestFeature.properties.username
+      }">${interestFeature.properties.username}</a> ${interestTypeString(
   interestFeature.properties.type
 )}</div>
       <div class="item-popup-title">${interestFeature.properties.title}</div>

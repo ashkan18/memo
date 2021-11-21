@@ -46,6 +46,7 @@ defmodule Memo.Interests do
 
   def near(query, _), do: query
 
+  def by_term(query, %{"term" => ""}), do: query
   def by_term(query, %{"term" => term}) when not is_nil(term) do
     from(ui in query,
       join: user in assoc(ui, :user),
