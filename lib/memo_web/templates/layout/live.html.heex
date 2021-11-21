@@ -42,10 +42,17 @@
       <div class="ml-5"><%= link "Log in", to: Routes.user_session_path(@socket, :new) %></div>
     <% end %>
   </section>
-  <div id="add-interest-modal" x-show="open" x-transition x-cloak class="reference-input max-w-sm rounded overflow-hidden shadow-lg flex flex-col items-center h-2/5 px-auto">
-    <form phx-change="parseInterest" id="parseInterest" phx:page-loading-start class="w-full reference-input">
+  <div id="add-interest-modal" x-show="open" x-transition x-cloak class="max-w-sm rounded overflow-hidden shadow-lg flex flex-col items-center h-2/5 px-auto bg-gray-600">
+    <form phx-change="parseInterest" id="parseInterest" class="w-full">
       <input type="text" placeholder="Link to item, ISBN..." phx-debounce="2000" name="reference" class="text-xs w-full"/>
     </form>
+    <%= if @fetching do %>
+      <div class="flex justify-center items-center p-10">
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"
+        ></div>
+      </div>
+    <% end %>
     <%= if @fetched and !@submitted do %>
       <div class={"parsed-item-#{Map.get(@parsed_results, :type)} flex flex-col items-center"}>
         <img src={@parsed_results.image} class="w-2/4">

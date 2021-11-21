@@ -172,13 +172,9 @@ form {
   top: 0px;
   margin: auto;
   z-index: 5;
-  background-color: #8a6d3b;
   border: 1px white solid;
 }
 
-.reference-input {
-  background-color: #aaa;
-}
 
 .parsed-item-watched {
   background-color:  #FF8C00;

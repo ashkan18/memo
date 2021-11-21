@@ -17,6 +17,7 @@ defmodule MemoWeb.HomeLive do
        has_location: false,
        latitude: nil,
        longitude: nil,
+       fetching: false,
        fetched: false,
        submitted: false
      )}
@@ -25,23 +26,7 @@ defmodule MemoWeb.HomeLive do
   @impl true
   def handle_info({"search", params}, socket), do: search(socket, params)
 
-  @impl true
-  def handle_event("search", params, socket), do: search(socket, params)
-
-  @impl true
-  def handle_event(
-        "setLocation",
-        params = %{"latitude" => latitude, "longitude" => longitude},
-        socket
-      ) do
-    socket = assign(socket, has_location: true, latitude: latitude, longitude: longitude)
-    send(self(), {"search", params})
-    :timer.send_after(1000, self(), {"search", %{}})
-    {:noreply, socket}
-  end
-
-  @impl true
-  def handle_event("parseInterest", %{"reference" => reference}, socket) do
+  def handle_info({"fetchReference", %{"reference" => reference}}, socket) do
     parse_result =
       case URI.parse(reference) do
         %URI{scheme: nil} ->
@@ -58,12 +43,39 @@ defmodule MemoWeb.HomeLive do
         {:noreply,
          assign(socket,
            fetched: true,
+           fetching: false,
            parsed_results: result,
            reference: reference
          )}
 
       _ ->
         {:noreply, assign(socket, :fetched, false)}
+    end
+  end
+
+
+  @impl true
+  def handle_event("search", params, socket), do: search(socket, params)
+
+  @impl true
+  def handle_event(
+        "setLocation",
+        params = %{"latitude" => latitude, "longitude" => longitude},
+        socket
+      ) do
+    socket = assign(socket, has_location: true, latitude: latitude, longitude: longitude)
+    send(self(), {"search", params})
+    :timer.send_after(1000, self(), {"search", %{}})
+    {:noreply, socket}
+  end
+
+
+  def handle_event("parseInterest", %{"reference" => reference}, socket) do
+    if is_nil(reference) or String.trim(reference) == "" do
+      {:noreply, assign(socket, fetching: false, parsed_result: nil, reference: nil, fetched: false)}
+    else
+      send(self(), {"fetchReference", %{"reference" => reference}})
+      {:noreply, assign(socket, :fetching, true)}
     end
   end
 
