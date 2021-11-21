@@ -1,0 +1,10 @@
+<ul class="bg-gray-400 w-screen">
+  <%= for interest <- @my_interests do %>
+    <li class={"item-#{interest.type} p-2 m-1 flex flex-row"}>
+      <img src={interest.thumbnail} class="w-2/4"/>
+      <div>
+        <%= interest.type %> <%= interest.title %>
+      </div>
+    </li>
+  <% end %>
+</ul>

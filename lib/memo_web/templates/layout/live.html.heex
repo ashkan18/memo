@@ -1,8 +1,10 @@
 <header x-data="{open: false, userMenuOpen: false}" class="max-h-12 m-0">
   <section class="flex flex-row md:flex-row items-center m-0 p-0 items-start">
-    <h2 id="logo" class="flex-initial text-2xl w-20">
-      M<span class="text-base">e</span><span class="italic">M</span><span class="text-base italic">o</span>
-    </h2>
+    <a href="/">
+      <h2 id="logo" class="flex-initial text-2xl w-20">
+        M<span class="text-base">e</span><span class="italic">M</span><span class="text-base italic">o</span>
+      </h2>
+    </a>
     
     <form phx-change="search" phx-submit="save" id="header-search" class="flex-grow text-xs ml-10">
       <input type="text" placeholder="Search creator, user, title..." phx-debounce="2000" name="term" class="text-xs w-full" value={@term}/>
@@ -33,6 +35,7 @@
               x-cloak>
           <div class="py-1 rounded-md bg-white shadow-xs" role="menu">
             <%= link "Settings", to: Routes.user_settings_path(@socket, :edit), class: "block px-4 py-2 text-sm leading-5 hover:bg-gray-100" %>
+            <%= link "My Feed", to: Routes.user_feed_path(@socket, :my_interests), class: "block px-4 py-2 text-sm leading-5 hover:bg-gray-100" %>
             <%= link "Log out", to: Routes.user_session_path(@socket, :delete), method: :delete, class: "block px-4 py-2 text-sm leading-5 hover:bg-gray-100"%>  
           </div>
         </div>
@@ -44,7 +47,7 @@
   </section>
   <div id="add-interest-modal" x-show="open" x-transition x-cloak class="max-w-sm rounded overflow-hidden shadow-lg flex flex-col items-center h-2/5 px-auto bg-gray-600">
     <form phx-change="parseInterest" id="parseInterest" class="w-full">
-      <input type="text" placeholder="Link to item, ISBN..." phx-debounce="2000" name="reference" class="text-xs w-full"/>
+      <input type="text" placeholder="Link to item, ISBN..." phx-debounce="1000" name="reference" class="text-xs w-full"/>
     </form>
     <%= if @fetching do %>
       <div class="flex justify-center items-center p-10">

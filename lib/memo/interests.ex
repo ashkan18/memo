@@ -9,6 +9,14 @@ defmodule Memo.Interests do
   alias Memo.Interests.UserInterest
   alias Memo.Creators
 
+
+  def my_interests(user) do
+    from(ui in UserInterest,
+      where: ui.user_id == ^user.id
+    )
+    |> Repo.all()
+  end
+
   def user_feed(user) do
     from(ui in UserInterest,
       join: f in Follow,
