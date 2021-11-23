@@ -90,6 +90,8 @@ defmodule MemoWeb do
       import MemoWeb.ErrorHelpers
       import MemoWeb.Gettext
       alias MemoWeb.Router.Helpers, as: Routes
+
+      alias MemoWeb.Views.Util, as: ViewUtil
     end
   end
 
