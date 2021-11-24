@@ -20,12 +20,14 @@ defmodule MemoWeb.HomeLive do
        fetching: false,
        fetched: false,
        submitted: false,
-       term: nil
+       term: nil,
+       selected_user: nil
      )}
   end
 
   @impl true
   def handle_params(%{"username" => username}, _url, socket) do
+    send(self(), {"selectUser", %{"username" => username}})
     send(self(), {"search", %{"term" => username}})
     {:noreply, assign(socket, term: username)}
   end
@@ -33,6 +35,10 @@ defmodule MemoWeb.HomeLive do
 
   @impl true
   def handle_info({"search", params}, socket), do: search(socket, params)
+
+  def handle_info({"selectUser", %{"username" => username}}, socket) do
+    {:noreply, assign(socket, selected_user: Accounts.get_user_by_username(username))}
+  end
 
   def handle_info({"fetchReference", %{"reference" => reference}}, socket) do
     parse_result =

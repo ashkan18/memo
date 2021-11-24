@@ -52,7 +52,8 @@ defmodule Memo.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:tesla, "~> 1.4.3"},
-      {:plug_cowboy, "~> 2.5"}
+      {:plug_cowboy, "~> 2.5"},
+      {:exgravatar, "~> 2.0.3"}
     ]
   end
 
