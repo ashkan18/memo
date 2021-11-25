@@ -24,9 +24,10 @@ Hooks.MapThingsHandler = {
       const { latitude, longitude } = position.coords;
       this.pushEvent("setLocation", { longitude, latitude });
       map.setCenter([longitude, latitude]);
-      new mapboxgl.Marker({ color: "orange", rotation: 15 })
-        .setLngLat([longitude, latitude])
-        .addTo(map);
+      const el = document.createElement("span");
+      el.className =
+        "animate-pulse h-8 w-8 rounded-full bg-red-400 opacity-75 box-border border-2 shadow-2xl";
+      new mapboxgl.Marker(el).setLngLat([longitude, latitude]).addTo(map);
     });
 
     const handleSearchResults = ({ interests }) => {

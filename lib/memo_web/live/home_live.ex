@@ -121,6 +121,10 @@ defmodule MemoWeb.HomeLive do
     {:noreply, assign(socket, submitted: false, fetched: false, parsed_results: nil, reference: nil)}
   end
 
+  def handle_event("deselectUser", _params, socket) do
+    {:noreply, assign(socket, selected_user: nil, term: nil)}
+  end
+
   defp search(socket, params) do
     if socket.assigns.has_location do
       interests =

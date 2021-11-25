@@ -6,7 +6,7 @@
       </h2>
     </a>
     
-    <form phx-change="search" phx-submit="save" id="header-search" class="flex-grow text-xs ml-10">
+    <form phx-change="search" phx-submit="search" id="header-search" class="flex-grow text-xs ml-10">
       <input type="text" placeholder="Search creator, user, title..." phx-debounce="2000" name="term" class="text-xs w-full" value={@term}/>
     </form>
     <%= if @current_user do %>
