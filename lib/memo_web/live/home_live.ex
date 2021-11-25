@@ -21,7 +21,8 @@ defmodule MemoWeb.HomeLive do
        fetched: false,
        submitted: false,
        term: nil,
-       selected_user: nil
+       selected_user: nil,
+       selected_user_stats: nil
      )}
   end
 
@@ -31,13 +32,19 @@ defmodule MemoWeb.HomeLive do
     send(self(), {"search", %{"term" => username}})
     {:noreply, assign(socket, term: username)}
   end
+
   def handle_params(_params, _url, socket), do: {:noreply, socket}
 
   @impl true
   def handle_info({"search", params}, socket), do: search(socket, params)
 
   def handle_info({"selectUser", %{"username" => username}}, socket) do
-    {:noreply, assign(socket, selected_user: Accounts.get_user_by_username(username))}
+    user = Accounts.get_user_by_username(username)
+    {:noreply,
+     assign(socket,
+       selected_user: user,
+       selected_user_stats: Interests.user_stats(user)
+     )}
   end
 
   def handle_info({"fetchReference", %{"reference" => reference}}, socket) do
@@ -67,7 +74,6 @@ defmodule MemoWeb.HomeLive do
     end
   end
 
-
   @impl true
   def handle_event("search", params, socket), do: search(socket, params)
 
@@ -81,7 +87,6 @@ defmodule MemoWeb.HomeLive do
     send(self(), {"search", params})
     {:noreply, socket}
   end
-
 
   def handle_event("parseInterest", %{"reference" => reference}, socket) do
     if is_nil(reference) or String.trim(reference) == "" do

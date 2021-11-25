@@ -8,9 +8,10 @@ defmodule Memo.Interests do
 
   alias Memo.Interests.UserInterest
   alias Memo.Creators
+  alias Memo.Creators.{Creator, CreatorUserInterest}
 
 
-  def my_interests(user) do
+  def user_interests(user) do
     from(ui in UserInterest,
       where: ui.user_id == ^user.id
     )
@@ -24,6 +25,28 @@ defmodule Memo.Interests do
       where: f.follower_id == ^user.id
     )
     |> Repo.all()
+  end
+
+
+  def user_stats(user) do
+    from(ui in UserInterest,
+      join: cui in CreatorUserInterest,
+      on: cui.user_interest_id == ui.id,
+      join: c in Creator,
+      on: c.id == cui.creator_id,
+      where: ui.user_id == ^user.id,
+      group_by: fragment(" grouping sets ( (type), (name)) "),
+      select: [fragment( "count(*) "), ui.type, c.name],
+      order_by: fragment(" count desc ")
+    )
+    |> Repo.all()
+    |> Enum.reduce(%{top_creators: []}, fn [count, type, name], acc ->
+        cond do
+          not is_nil(type) -> Map.put(acc, type, count)
+          not is_nil(name) -> Map.update!(acc, :top_creators, fn current_list -> current_list ++ [name] end)
+          true -> acc
+        end
+      end)
   end
 
   def search_and_filter(args) do
