@@ -7,14 +7,14 @@
 
 <%= if @selected_user do %>
   <div id="selectedUser" class="justify-items-center items-center content-center z-5 relative top-0 left-0 w-80 bg-gray-600 ml-1 p-1 mt-1 flex-row box-border border-4 shadow-2xl text-sm">
-    <div class="absolute top-0 right-0 p-1 hover:text-yellow-400 cursor-pointer" phx-click="deselectUser"> x </div>
+    <div class="absolute top-0 right-1 p-1 hover:text-yellow-400 cursor-pointer" phx-click="deselectUser"> x </div>
     <div class="flex flex-col">
       <div class="flex flex-row">
         <img src={Exgravatar.gravatar_url(@selected_user.email, s: 75, d: "mp")} class="w-24 h-24 pr-1"/>
         <div class="flex flex-col">
           <div class="ml-3 font-mono"><%= @selected_user.username %></div>
-          <div class="ml-3">Listened: <%= @selected_user_stats.listened %> </div>
-          <div class="ml-3">Watched: <%= @selected_user_stats.watched %> </div>
+          <div class="ml-3">Listened: <%= @selected_user_stats[:listened] || 0 %> </div>
+          <div class="ml-3">Watched: <%= @selected_user_stats[:watched] || 0 %> </div>
         </div>
       </div>
       <div class="flex-col mt-3 text-left">
