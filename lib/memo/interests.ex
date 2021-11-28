@@ -6,7 +6,7 @@ defmodule Memo.Interests do
   import Ecto.Query, warn: false
   alias Memo.Repo
 
-  alias Memo.Interests.UserInterest
+  alias Memo.Interests.{UserInterest, Follow}
   alias Memo.Creators
   alias Memo.Creators.{Creator, CreatorUserInterest}
 
@@ -29,6 +29,7 @@ defmodule Memo.Interests do
 
 
   def user_stats(user) do
+    {follows_count, followers_count} = follow_stats(user)
     from(ui in UserInterest,
       join: cui in CreatorUserInterest,
       on: cui.user_interest_id == ui.id,
@@ -40,7 +41,7 @@ defmodule Memo.Interests do
       order_by: fragment(" count desc ")
     )
     |> Repo.all()
-    |> Enum.reduce(%{top_creators: []}, fn [count, type, name], acc ->
+    |> Enum.reduce(%{follows_count: follows_count, followers_count: followers_count, top_creators: []}, fn [count, type, name], acc ->
         cond do
           not is_nil(type) -> Map.put(acc, type, count)
           not is_nil(name) -> Map.update!(acc, :top_creators, fn current_list -> current_list ++ [name] end)
@@ -150,4 +151,41 @@ defmodule Memo.Interests do
       error -> error
     end
   end
+
+  def follow(attrs \\ %{}) do
+    %Follow{}
+    |> Follow.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def unfollow(user_id, follow_id) do
+    with follow <- Repo.one(
+        from f in Follow,
+        where: f.user_id == ^user_id,
+        where: f.follow_id == ^follow_id,
+        where: is_nil(f.unfollowed_at)
+      ),
+      now <- DateTime.utc_now(),
+      truncated_now <- DateTime.truncate(now, :second),
+      changeset <- Ecto.Changeset.change(follow, unfollowed_at: truncated_now),
+      {:ok, updated_follow}  <- Repo.update(changeset) do
+        {:ok, updated_follow}
+    else
+      _ -> {:error, :cannot_unfollow}
+    end
+  end
+
+  def follows?(user1, user2) do
+    from(f in Follow,
+      where: f.follow_id == ^user1.id and f.user_id == ^user2.id and is_nil(f.unfollowed_at)
+    )
+    |> Repo.exists?()
+  end
+
+  def follow_stats(user) do
+    followers_count = Repo.one(from f in Follow, where: f.follow_id == ^user.id, select: count(f.id))
+    follows_count = Repo.one(from f in Follow, where: f.user_id == ^user.id, select: count(f.id))
+    {follows_count, followers_count}
+  end
+
 end

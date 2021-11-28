@@ -15,12 +15,18 @@
           <div class="ml-3 font-mono"><%= @selected_user.username %></div>
           <div class="ml-3">Listened: <%= @selected_user_stats[:listened] || 0 %> </div>
           <div class="ml-3">Watched: <%= @selected_user_stats[:watched] || 0 %> </div>
+          <div class="ml-3">Follows: <%= @selected_user_stats[:follows_count] || 0 %> </div>
+          <div class="ml-3">Followers: <%= @selected_user_stats[:followers_count] || 0 %> </div>
         </div>
       </div>
       <div class="flex-col mt-3 text-left">
         <div class="ml-1">Top artists: <%= Enum.join(@selected_user_stats.top_creators, ", ") %> </div>
       </div>
     </div>
-    <button class="w-12 ring-4 ring-yellow-500 text-white h-6 w-2/4 mt-5 hover:bg-yellow-700 ml-2 mb-2">Follow</button>
+    <%= if not @follows_selected_user do %>
+      <button phx-click="follow" value={@selected_user.id} class="w-12 ring-4 ring-yellow-500 text-white h-6 w-2/4 mt-5 hover:bg-yellow-700 ml-2 mb-2">Follow</button>
+    <% else %>
+      <button phx-click="unfollow" value={@selected_user.id} class="w-12 ring-4 ring-yellow-500 text-white h-6 w-2/4 mt-5 hover:bg-yellow-700 ml-2 mb-2">UnFollow</button>
+    <% end %>
   </div>
 <% end %>

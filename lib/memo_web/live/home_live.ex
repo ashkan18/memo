@@ -22,7 +22,8 @@ defmodule MemoWeb.HomeLive do
        submitted: false,
        term: nil,
        selected_user: nil,
-       selected_user_stats: nil
+       selected_user_stats: nil,
+       follows_selected_user: false
      )}
   end
 
@@ -43,7 +44,8 @@ defmodule MemoWeb.HomeLive do
     {:noreply,
      assign(socket,
        selected_user: user,
-       selected_user_stats: Interests.user_stats(user)
+       selected_user_stats: Interests.user_stats(user),
+       follows_selected_user: Interests.follows?(socket.assigns.current_user, user)
      )}
   end
 
@@ -95,6 +97,16 @@ defmodule MemoWeb.HomeLive do
       send(self(), {"fetchReference", %{"reference" => reference}})
       {:noreply, assign(socket, :fetching, true)}
     end
+  end
+
+  def handle_event("follow", %{"value" => follow_id}, socket) do
+    Interests.follow(%{user_id: socket.assigns.current_user.id, follow_id: follow_id})
+    {:noreply, assign(socket, follows_selected_user: true)}
+  end
+
+  def handle_event("unfollow", %{"value" => follow_id}, socket) do
+    {:ok, _unfollowed} = Interests.unfollow(socket.assigns.current_user.id, follow_id)
+    {:noreply, assign(socket, follows_selected_user: false)}
   end
 
   @impl true

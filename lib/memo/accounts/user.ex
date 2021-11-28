@@ -9,6 +9,9 @@ defmodule Memo.Accounts.User do
     field :confirmed_at, :naive_datetime
     field :username, :string
 
+    has_many(:follows, Readtome.Connector.Follow, foreign_key: :follow_id)
+    has_many(:followers, Readtome.Connector.Follow)
+
     timestamps()
   end
 
