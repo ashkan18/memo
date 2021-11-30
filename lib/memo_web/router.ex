@@ -77,7 +77,7 @@ defmodule MemoWeb.Router do
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
-    get "/users/feed", UserFeedController, :my_interests
+    get "/users/profile", UserProfileController, :index
   end
 
   scope "/", MemoWeb do

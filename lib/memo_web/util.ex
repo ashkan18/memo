@@ -1,5 +1,6 @@
 defmodule Memo.Util do
   alias Memo.Interests.UserInterest
+  alias MemoWeb.Views.Util
 
   def interest_to_map(interest = %UserInterest{}) do
     {lat, lng} = interest.location.coordinates
@@ -8,7 +9,7 @@ defmodule Memo.Util do
       id: interest.id,
       title: interest.title,
       type: interest.type,
-      thumbnail: interest.thumbnail,
+      thumbnail: Util.interest_thumbnail(interest),
       creators: Enum.map(interest.creators, fn c -> c.name end) |> Enum.join(","),
       user: %{
         id: interest.user.id,

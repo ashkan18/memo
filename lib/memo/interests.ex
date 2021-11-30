@@ -10,7 +10,6 @@ defmodule Memo.Interests do
   alias Memo.Creators
   alias Memo.Creators.{Creator, CreatorUserInterest}
 
-
   def user_interests(user) do
     from(ui in UserInterest,
       where: ui.user_id == ^user.id
@@ -27,9 +26,9 @@ defmodule Memo.Interests do
     |> Repo.all()
   end
 
-
   def user_stats(user) do
-    {follows_count, followers_count} = follow_stats(user)
+    follow_stats = follow_stats(user)
+
     from(ui in UserInterest,
       join: cui in CreatorUserInterest,
       on: cui.user_interest_id == ui.id,
@@ -37,17 +36,20 @@ defmodule Memo.Interests do
       on: c.id == cui.creator_id,
       where: ui.user_id == ^user.id,
       group_by: fragment(" grouping sets ( (type), (name)) "),
-      select: [fragment( "count(*) "), ui.type, c.name],
+      select: [fragment("count(*) "), ui.type, c.name],
       order_by: fragment(" count desc ")
     )
     |> Repo.all()
-    |> Enum.reduce(%{follows_count: follows_count, followers_count: followers_count, top_creators: []}, fn [count, type, name], acc ->
+    |> Enum.reduce(
+      %{follows_count: follow_stats.follows_count, followers_count: follow_stats.followers_count, top_creators: []},
+      fn [count, type, name], acc ->
         cond do
           not is_nil(type) -> Map.put(acc, type, count)
           not is_nil(name) -> Map.update!(acc, :top_creators, fn current_list -> current_list ++ [name] end)
           true -> acc
         end
-      end)
+      end
+    )
   end
 
   def search_and_filter(args) do
@@ -79,6 +81,7 @@ defmodule Memo.Interests do
   def near(query, _), do: query
 
   def by_term(query, %{"term" => ""}), do: query
+
   def by_term(query, %{"term" => term}) when not is_nil(term) do
     from(ui in query,
       join: user in assoc(ui, :user),
@@ -159,17 +162,18 @@ defmodule Memo.Interests do
   end
 
   def unfollow(user_id, follow_id) do
-    with follow <- Repo.one(
-        from f in Follow,
-        where: f.user_id == ^user_id,
-        where: f.follow_id == ^follow_id,
-        where: is_nil(f.unfollowed_at)
-      ),
-      now <- DateTime.utc_now(),
-      truncated_now <- DateTime.truncate(now, :second),
-      changeset <- Ecto.Changeset.change(follow, unfollowed_at: truncated_now),
-      {:ok, updated_follow}  <- Repo.update(changeset) do
-        {:ok, updated_follow}
+    with follow <-
+           Repo.one(
+             from f in Follow,
+               where: f.user_id == ^user_id,
+               where: f.follow_id == ^follow_id,
+               where: is_nil(f.unfollowed_at)
+           ),
+         now <- DateTime.utc_now(),
+         truncated_now <- DateTime.truncate(now, :second),
+         changeset <- Ecto.Changeset.change(follow, unfollowed_at: truncated_now),
+         {:ok, updated_follow} <- Repo.update(changeset) do
+      {:ok, updated_follow}
     else
       _ -> {:error, :cannot_unfollow}
     end
@@ -185,7 +189,6 @@ defmodule Memo.Interests do
   def follow_stats(user) do
     followers_count = Repo.one(from f in Follow, where: f.follow_id == ^user.id, select: count(f.id))
     follows_count = Repo.one(from f in Follow, where: f.user_id == ^user.id, select: count(f.id))
-    {follows_count, followers_count}
+    %{follows_count: follows_count, followers_count: followers_count}
   end
-
 end

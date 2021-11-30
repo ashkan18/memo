@@ -41,6 +41,7 @@ defmodule MemoWeb.HomeLive do
 
   def handle_info({"selectUser", %{"username" => username}}, socket) do
     user = Accounts.get_user_by_username(username)
+
     {:noreply,
      assign(socket,
        selected_user: user,

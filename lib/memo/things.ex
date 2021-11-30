@@ -83,7 +83,8 @@ defmodule Memo.Things do
         |> Enum.at(1)
         |> cleanup_author_name()
 
-      true -> ""
+      true ->
+        ""
     end
   end
 

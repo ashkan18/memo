@@ -28,7 +28,7 @@
               x-cloak>
           <div class="py-1 rounded-md bg-white shadow-xs" role="menu">
             <%= link "Settings", to: Routes.user_settings_path(@conn, :edit), class: "block px-4 py-2 text-sm leading-5 hover:bg-gray-100" %>
-            <%= link "My Feed", to: Routes.user_feed_path(@conn, :my_interests), class: "block px-4 py-2 text-sm leading-5 hover:bg-gray-100" %>
+            <%= link "Profile", to: Routes.user_profile_path(@conn, :index), class: "block px-4 py-2 text-sm leading-5 hover:bg-gray-100" %>
             <%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete, class: "block px-4 py-2 text-sm leading-5 hover:bg-gray-100"%>  
           </div>
         </div>

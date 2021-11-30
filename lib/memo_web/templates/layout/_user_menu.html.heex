@@ -1,8 +1,0 @@
-<%= if @current_user do %>
-  <div><%= @current_user.email %></div>
-  <div><%= link "Settings", to: Routes.user_settings_path(@conn, :edit) %></div>
-  <div><%= link "Log out", to: Routes.user_session_path(@conn, :delete), method: :delete %></div>
-<% else %>
-  <div class="ml-5"><%= link "Sign up!", to: Routes.user_registration_path(@conn, :new) %></div>
-  <div class="ml-5"><%= link "Log in", to: Routes.user_session_path(@conn, :new) %></div>
-<% end %>

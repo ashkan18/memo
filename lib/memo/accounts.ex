@@ -26,7 +26,6 @@ defmodule Memo.Accounts do
     Repo.get_by(User, email: email)
   end
 
-
   @doc """
   Gets a user by username.
 
@@ -364,17 +363,4 @@ defmodule Memo.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
-
-  # def follow(attrs \\ %{}) do
-  #   %Follow{}
-  #   |> Follow.changeset(attrs)
-  #   |> Repo.insert()
-  # end
-
-  # def follows?(user1, user2) do
-  #   from(f in Follow,
-  #     where: f.follower_id == ^user1.id and f.user_id == ^user2.id
-  #   )
-  #   |> Repo.exists?()
-  # end
 end
