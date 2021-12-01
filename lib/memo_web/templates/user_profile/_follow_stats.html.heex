@@ -1,4 +1,4 @@
-<div class="flex flex-row justify-around">
-  <div>Following: <%= @follow_stats.follows_count %></div>
-  <div>Followers: <%= @follow_stats.followers_count %></div>
+<div class="flex flex-row justify-around p-4">
+  <div class="text-lg ring-4 ring-yellow-500 ring-opacity-50 p-2 filter drop-shadow-lg"><span>Following:</span> <%= @follow_stats.follows_count %></div>
+  <div class="text-lg ring-4 ring-yellow-500 ring-opacity-50 p-2 ring-offset-2"><span class="text-lg">Followers:</span> <%= @follow_stats.followers_count %></div>
 </div>
