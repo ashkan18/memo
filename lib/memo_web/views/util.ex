@@ -4,6 +4,8 @@ defmodule MemoWeb.Views.Util do
   def interest_thumbnail(%UserInterest{thumbnail: thumbnail, type: type}) when is_nil(thumbnail) do
     case type do
       :listened -> "/images/audio.png"
+      :read -> "/images/read.png"
+      :watched -> "/images/audio.png"
     end
   end
 
