@@ -9,8 +9,8 @@ defmodule Memo.Accounts.User do
     field :confirmed_at, :naive_datetime
     field :username, :string
 
-    has_many(:follows, Readtome.Connector.Follow, foreign_key: :follow_id)
-    has_many(:followers, Readtome.Connector.Follow)
+    has_many(:follows, Memo.Interests.Follow, foreign_key: :follow_id)
+    has_many(:followers, Memo.Interests.Follow)
 
     timestamps()
   end
@@ -34,7 +34,8 @@ defmodule Memo.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:email, :password, :username])
+    |> validate_required([:email, :password, :username])
     |> validate_email()
     |> validate_password(opts)
     |> unique_constraint(:email)

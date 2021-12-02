@@ -1,11 +1,5 @@
 <div class="container py-8 max-w-xl mx-auto py-12 divide-y md:max-w-4xl">
-<.form let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user} class="grid grid-cols-1 gap-6 rounded-sm border-solid border-4 border-light-blue-500">
-  <%= if @error_message do %>
-    <div class="alert alert-danger">
-      <p><%= @error_message %></p>
-    </div>
-  <% end %>
-
+<.form let={f} for={@conn} action={Routes.user_session_path(@conn, :create)} as={:user} class="p-10 grid grid-cols-1 gap-6 rounded-sm border-solid border-4 border-light-blue-500">
   <%= label f, :email %>
   <%= email_input f, :email, required: true %>
 
@@ -15,9 +9,13 @@
   <%= label f, :remember_me, "Keep me logged in for 60 days" %>
   <%= checkbox f, :remember_me %>
 
-  <div>
-    <%= submit "Log in" %>
-  </div>
+  <%= submit "Log in", class: "w-12 ring-2 ring-yellow-500 p-2 w-2/4 mt-5 hover:bg-yellow-700 mx-auto" %>
+  <%= if @error_message do %>
+    <div class="alert alert-danger">
+      <p><%= @error_message %></p>
+    </div>
+  <% end %>
+
 </.form>
 
 <p>
