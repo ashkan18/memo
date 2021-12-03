@@ -23,7 +23,8 @@ defmodule MemoWeb.HomeLive do
        term: nil,
        selected_user: nil,
        selected_user_stats: nil,
-       follows_selected_user: false
+       follows_selected_user: false,
+       creators: []
      )}
   end
 
@@ -79,6 +80,10 @@ defmodule MemoWeb.HomeLive do
 
   @impl true
   def handle_event("search", params, socket), do: search(socket, params)
+
+  def handle_event("findCreator", %{"value" => name}, socket) do
+    {:noreply, assign(socket, creators: Creators.search(name))}
+  end
 
   @impl true
   def handle_event(

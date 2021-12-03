@@ -119,4 +119,17 @@ defmodule Memo.Creators do
     |> CreatorUserInterest.changeset(attrs)
     |> Repo.insert()
   end
+
+  def search(name) do
+    from(
+      c in Creator,
+      where:
+        fragment(
+          "LOWER(?) % LOWER(?)",
+          c.name,
+          ^name
+        )
+    )
+    |> Repo.all()
+  end
 end

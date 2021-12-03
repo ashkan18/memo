@@ -62,7 +62,20 @@
         <form phx-submit="submitInterest" id="submitform" class="w-full p-5">
           <input type="text" name="title" value={Map.get(@parsed_results, :title)} placeholder="Title of the work" class="w-full"/>
           <input type="text" name="type" value={Map.get(@parsed_results, :type)} placeholder="Title of the work" class="w-full"/>
-          <input type="text" name="creator_names" value={Map.get(@parsed_results, :creator_names)} placeholder="Comma separated list of creators of the work" class="w-full"/>
+          <input type="text" 
+            name="creator_names"
+            phx-debounce="500"
+            placeholder="Comma separated list of creators of the work" class="w-full"
+            phx-keyup="findCreator"
+            value={Map.get(@parsed_results, :creator_names)}
+            list="creators-autocomplete"/>
+          <datalist id="creators-autocomplete">
+            <%= if @creators do %>
+              <%= for c <- @creators do %>
+                <option><%= c.name %></option>
+              <% end %>
+            <% end %>
+          </datalist>
           <input type="hidden" name="thumbnail" value={Map.get(@parsed_results, :image)}/>
           <input type="hidden" name="ref" value={@reference}/>
         </form>
