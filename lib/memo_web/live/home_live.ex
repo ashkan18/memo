@@ -20,6 +20,8 @@ defmodule MemoWeb.HomeLive do
        fetching: false,
        fetched: false,
        submitted: false,
+       parsed_results: nil,
+       reference: nil,
        term: nil,
        selected_user: nil,
        selected_user_stats: nil,

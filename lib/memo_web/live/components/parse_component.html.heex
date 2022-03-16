@@ -1,0 +1,47 @@
+<div id="add-interest-modal" x-show="open" x-transition x-cloak class="max-w-sm rounded overflow-hidden shadow-lg flex flex-col items-center h-2/5 px-auto bg-gray-600">
+    <form phx-change="parseInterest" id="parseInterest" class="w-full">
+      <input type="text" placeholder="Link to item, ISBN..." phx-debounce="1000" name="reference" class="text-xs w-full"/>
+    </form>
+    <%= if @fetching do %>
+      <div class="flex justify-center items-center p-10">
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"
+        ></div>
+      </div>
+    <% end %>
+    <%= if @fetched and !@submitted and @parsed_results do %>
+      <div class={"parsed-item-#{Map.get(@parsed_results, :type)} flex flex-col items-center"}>
+        <img src={@parsed_results.image} class="w-2/4">
+        <form phx-submit="submitInterest" id="submitform" class="w-full p-5">
+          <input type="text" name="title" value={Map.get(@parsed_results, :title)} placeholder="Title of the work" class="w-full"/>
+          <input type="text" name="type" value={Map.get(@parsed_results, :type)} placeholder="Title of the work" class="w-full"/>
+          <input type="text" 
+            name="creator_names"
+            phx-debounce="500"
+            placeholder="Comma separated list of creators of the work" class="w-full"
+            phx-keyup="findCreator"
+            value={Map.get(@parsed_results, :creator_names)}
+            list="creators-autocomplete"/>
+          <datalist id="creators-autocomplete">
+            <%= if @creators do %>
+              <%= for c <- @creators do %>
+                <option><%= c.name %></option>
+              <% end %>
+            <% end %>
+          </datalist>
+          <input type="hidden" name="thumbnail" value={Map.get(@parsed_results, :image)}/>
+          <input type="hidden" name="ref" value={@reference}/>
+        </form>
+        <div class="flex flex-row">
+          <input type="submit" form="submitform" value="Submit" class="text-lg ring-4 m-2 p-2 cursor-pointer" value="submit"/>
+          <button x-on:click="open = false" phx-click="closeSubmit" class="text-lg ring-4 m-2 p-2 cursor-pointer"> Close </button>
+        </div>
+      </div>
+    <% end %>
+    <%= if @submitted do %>
+      <div class={"parsed-item-#{Map.get(@parsed_results, :type)}"}>
+        <span> Added successfully </span>
+        <button x-on:click="open = false" phx-click="closeSubmit"> Close </button>
+      </div>
+    <% end %>
+  </div>

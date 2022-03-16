@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :memo, Memo.Repo,
   username: "memo",
-  password: "memo_dev",
+  # password: "memo_dev",
   database: "memo_dev",
   hostname: "localhost",
   extensions: [{Geo.PostGIS.Extension, library: Geo}],
