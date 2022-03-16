@@ -1,6 +1,6 @@
 defmodule MemoWeb.HomeLive do
   use MemoWeb, :live_view
-  alias Memo.{Accounts, Things, Interests, Creators, Util}
+  alias Memo.{Accounts, Interests, Util}
 
   @impl true
   def mount(_params, session, socket) do
@@ -17,16 +17,10 @@ defmodule MemoWeb.HomeLive do
        has_location: false,
        latitude: nil,
        longitude: nil,
-       fetching: false,
-       fetched: false,
-       submitted: false,
-       parsed_results: nil,
-       reference: nil,
        term: nil,
        selected_user: nil,
        selected_user_stats: nil,
-       follows_selected_user: false,
-       creators: []
+       follows_selected_user: false
      )}
   end
 
@@ -53,39 +47,8 @@ defmodule MemoWeb.HomeLive do
      )}
   end
 
-  def handle_info({"fetchReference", %{"reference" => reference}}, socket) do
-    parse_result =
-      case URI.parse(reference) do
-        %URI{scheme: nil} ->
-          # not a uri, try ISBN
-          Things.find_by_isbn(reference)
-
-        _ ->
-          # uri try unfurl
-          Things.unfurl_link(reference)
-      end
-
-    case parse_result do
-      {:ok, result} ->
-        {:noreply,
-         assign(socket,
-           fetched: true,
-           fetching: false,
-           parsed_results: result,
-           reference: reference
-         )}
-
-      _ ->
-        {:noreply, assign(socket, :fetched, false)}
-    end
-  end
-
   @impl true
   def handle_event("search", params, socket), do: search(socket, params)
-
-  def handle_event("findCreator", %{"value" => name}, socket) do
-    {:noreply, assign(socket, creators: Creators.search(name))}
-  end
 
   @impl true
   def handle_event(
@@ -98,15 +61,6 @@ defmodule MemoWeb.HomeLive do
     {:noreply, socket}
   end
 
-  def handle_event("parseInterest", %{"reference" => reference}, socket) do
-    if is_nil(reference) or String.trim(reference) == "" do
-      {:noreply, assign(socket, fetching: false, parsed_result: nil, reference: nil, fetched: false)}
-    else
-      send(self(), {"fetchReference", %{"reference" => reference}})
-      {:noreply, assign(socket, :fetching, true)}
-    end
-  end
-
   def handle_event("follow", %{"value" => follow_id}, socket) do
     Interests.follow(%{user_id: socket.assigns.current_user.id, follow_id: follow_id})
     {:noreply, assign(socket, follows_selected_user: true)}
@@ -115,35 +69,6 @@ defmodule MemoWeb.HomeLive do
   def handle_event("unfollow", %{"value" => follow_id}, socket) do
     {:ok, _unfollowed} = Interests.unfollow(socket.assigns.current_user.id, follow_id)
     {:noreply, assign(socket, follows_selected_user: false)}
-  end
-
-  @impl true
-  def handle_event("submitInterest", params, socket) do
-    %{latitude: lat, longitude: lng} = socket.assigns
-
-    creator_ids =
-      params
-      |> Map.get("creator_names")
-      |> String.split(",")
-      |> Enum.map(&Creators.add_by_name/1)
-      |> Enum.reject(&is_nil/1)
-      |> Enum.map(fn c -> c.id end)
-
-    params
-    |> Map.merge(%{
-      "latitude" => lat,
-      "longitude" => lng,
-      "user_id" => socket.assigns.current_user.id,
-      "creator_ids" => creator_ids
-    })
-    |> Interests.add()
-
-    :timer.send_after(1000, self(), {"search", %{}})
-    {:noreply, assign(socket, :submitted, true)}
-  end
-
-  def handle_event("closeSubmit", _params, socket) do
-    {:noreply, assign(socket, submitted: false, fetched: false, parsed_results: nil, reference: nil)}
   end
 
   def handle_event("deselectUser", _params, socket) do
